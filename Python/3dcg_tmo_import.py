@@ -11,6 +11,9 @@ from Blender import *
 from struct import *
 from Blender.Mathutils import *
 
+import StringIO
+import zlib
+
 ####################
 #      Import      #
 ####################
@@ -110,33 +113,87 @@ def Gui():
 			tmo_file= sys.join( path, B["TmoFileBase"].val )
 		
 		elif evt==10:
+
+			print('Reading.');
+
 			if Blender.sys.exists(tmo_file) == 1:
 				frame= 1
 				
-				file= open(tmo_file, "rb")
-				if file.read(4) == "TMO1":
-					
-					file.seek(20)
-					tmo_node= []
-					for f1 in xrange( unpack("<i", file.read(4))[0] ):
-						path= " "
-						while path[-1] != chr(0x00):
-							path+= file.read(1)
-						tmo_node.append( path[1:-1] )
-					
-					tmo_mat= []
-					for f1 in xrange( unpack("<i", file.read(4))[0] ):
-						tmo_mat.append([])
-						for f2 in xrange( unpack("<i", file.read(4))[0] ):
-							floats= unpack("<16f", file.read(64))
-							mat= Matrix(\
-								[floats[ 0],floats[ 1],floats[ 2],floats[ 3]],
-								[floats[ 4],floats[ 5],floats[ 6],floats[ 7]],
-								[floats[ 8],floats[ 9],floats[10],floats[11]],
-								[floats[12],floats[13],floats[14],floats[15]])
-							tmo_mat[-1].append(mat)
-				
-				file.close()
+				def readTMO(file):
+
+					if file.read(4) == "TMO1":
+
+						file.seek(20)
+						tmo_node= []
+						for f1 in xrange( unpack("<i", file.read(4))[0] ):
+							path= " "
+							while path[-1] != chr(0x00):
+								path+= file.read(1)
+							tmo_node.append( path[1:-1] )
+
+						tmo_mat= []
+						for f1 in xrange( unpack("<i", file.read(4))[0] ):
+							tmo_mat.append([])
+							for f2 in xrange( unpack("<i", file.read(4))[0] ):
+								floats= unpack("<16f", file.read(64))
+								mat= Matrix(\
+									[floats[ 0],floats[ 1],floats[ 2],floats[ 3]],
+									[floats[ 4],floats[ 5],floats[ 6],floats[ 7]],
+									[floats[ 8],floats[ 9],floats[10],floats[11]],
+									[floats[12],floats[13],floats[14],floats[15]])
+								tmo_mat[-1].append(mat)
+
+						return [tmo_node, tmo_mat];
+
+					else:
+
+						print('FILE_NOT_TMO');
+
+				if tmo_file.endswith('.tdcgpose.png'):
+
+					print('Reading PNG.');
+
+					file = open(tmo_file, 'rb');
+					if file.read(4) == '\x89PNG':
+						file.seek(8);
+						while True:
+							length, = unpack('>I', file.read(4));
+							type = file.read(4);
+							data = file.read(length);
+							crc, = unpack('>I', file.read(4));
+
+							if type == 'taOb':
+
+								io = StringIO.StringIO(data);
+
+								innerType = io.read(4);
+								io.seek(12);
+								extractedLength, = unpack('>i', io.read(4));
+								innerLength, = unpack('>i', io.read(4));
+								extractedData = zlib.decompress(io.read(innerLength));
+
+								if innerType == 'FTMO':
+
+									tmo_node, tmo_mat = readTMO(StringIO.StringIO(extractedData));
+									break; # Finish when we have 1 TMO.
+
+					else:
+
+						print('FILE_NOT_PNG');
+
+					file.close();
+
+				elif tmo_file.endswith('.tmo'):
+
+					print('Reading TMO.');
+
+					file= open(tmo_file, "rb");
+					tmo_node, tmo_mat = readTMO(file);
+					file.close();
+
+			else:
+
+				print('FILE_NOT_FOUND');
 				
 		elif evt==20:
 			frame= B["TimeLine"].val
@@ -184,9 +241,9 @@ def Gui():
 		B["TmoFileBase"]= Draw.String("", 2, W["X"], W["Y"], W["W"], W["H"], sys.basename(tmo_file), 200, )
 		
 		
-		#[Push]: TMO Lead
+		#[Push]: TMO Read
 		W= Win(0,50,100,65, 10,0,-10,-0)
-		Draw.PushButton("TMO Lead", 10, W["X"], W["Y"], W["W"], W["H"], )
+		Draw.PushButton("TMO Read", 10, W["X"], W["Y"], W["W"], W["H"], )
 		
 		
 		if tmo_node:
