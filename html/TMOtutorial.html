@@ -1,0 +1,61 @@
+<Html>
+<Head>
+<Title>TMO作成までのチュートリアル</Title>
+<Meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+</Head>
+<Body>
+
+TMOファイルを出力する時、「3dcg_tmo_export.py」を使うのですが、
+ボーンのHeadの位置を動かさないで下さい。<br>
+親を変えたり、ボーンのTailの位置を変えたり、コンストレインツを使うことはできます。<br>
+よって、リギングである程度ポーズを付けやすくする事ができます。<br><br>
+
+3dcg_tmo_export.py 自体の使い方は簡単ですが、モーションを付けれるようになるまでに手間が掛かります。<br>
+・アーマチュアをTSOファイルから取り込む。<br>
+・ボーンだけでは表情を付けにくいのでボディを取り込んだり、スカートや髪も必要になるかもしれません。<br>
+・仕様により、Armatureを二つ用意する必要があります。<br>
+・IKを使うための設定をする。<br>
+等…<br><br>
+
+<Img Src="TMOtutorial_img\import.jpg"><br>
+まず標準ボディTSOファイル(N001BODY_A00.tso 等)から、アーマチュアとメッシュを取り込みます。<br>
+File→ Import→ 3DCG tso file (.tso)...<br>
+MeshとArmatureにチェックを入れる。<br>
+ファイルを選択する。<br>
+Importを押せば、現在のレイヤーに追加されます。<br><br>
+
+<Img Src="TMOtutorial_img\join.jpg"><br>
+扱いやすくする為に、メッシュオブジェクトを[Ctrl+J]で統合します。<br><br>
+
+<Img Src="TMOtutorial_img\mimic.jpg"><br>
+TSOファイルのノードには初期値が設定されており、3dcg_tso_import.pyで取り込んだアーマチュアにもRotが適用されています。<br>
+このアーマチュアにアーマチュアモデファイアを設定すると、実際とは違う形に変形されます。<br>
+しかし、出力する時には初期値が必要になるので、もう一つ同じアーマチュアを用意して、
+元のアーマチュアの動きを完全にコピーさせる事になります。<br><br>
+まず[Shift+D]でコピーします。<br>
+コピーをポーズモードにして、[Apply Pose as Restpose]を押します。<br>
+おまけのスクリプト、「ArmatureMimic」を使ってコピーを元のアーマチュアの動きを真似させるようにします。<br><br>
+
+<Img Src="TMOtutorial_img\ob.jpg"><br>
+メッシュオブジェクトにアーマチュアモデファイアを追加します。<br>
+コピーのアーマチュアのオブジェクト名を入力します。<br><br>
+
+<Img Src="TMOtutorial_img\pose.jpg"><br>
+適当にポーズを付けます。<br><br>
+
+<Img Src="TMOtutorial_img\frame.jpg"><br>
+開始フレームと終了フレームの設定をします。
+どちらも同じ値の場合は、ただのポーズになります
+
+3dcg_tmo_export.pyを起動します。<br>
+File→ Export→ 3DCG tmo file (.tmo)...<br><br>
+
+<Img Src="TMOtutorial_img\export.jpg"><br>
+設定し、元のアーマチュアを選択し[Export]ボタンを押します。<br><br>
+
+<Img Src="TMOtutorial_img\finish.jpg"><br>
+TAHにして3DCGに持ってきました。
+手を上げただけのポーズですが、適用されている事がわかります。<br>
+
+</Body>
+</Html>

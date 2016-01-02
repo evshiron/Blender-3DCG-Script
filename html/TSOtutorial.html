@@ -1,0 +1,98 @@
+<Html>
+<Head>
+<Title>TSO作成までのチュートリアル</Title>
+<Meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+</Head>
+<Body>
+
+まずメッシュを作ってしまいます。<br>
+今回は 3D画面でスペース→ Mesh→ UVsphere→ OK<br>
+で出てくる球体を3DCGに持ち込んでみます。<br>
+<Img Src="TSOtutorial_img\sphere.jpg"><br><br>
+
+これを腰の辺りに移動させたいのですが、位置を比較できる物が無いので、base.tahから標準のボディメッシュを
+Blenderに持ってきましょう。<br><br>
+
+まず、 File→ Import→ 3DCG tso file (.tso)...<br>
+と左クリックして、インポーターを起動します。<br>
+設定画面が表示されるので、取り込みたい種類のデータを選びます。<br>
+(今回は「Mesh」「Shader Text」「Material Text」をチェックをします。)<br>
+次に「TSO select」を押すと、ファイル選択画面となるので、あらかじめ取り出しておいた標準ボディのTSOファイル
+(N001BODY_A00.tso 等)を選び、「Select TSO file」をクリックし、最後に「Import」ボタンをクリックすれば
+持ち込めるはずです。<br>
+<Img Src="TSOtutorial_img\import.jpg"><br><br>
+
+エディットモードでGキーを押し移動させます。<br>
+Sキーで拡大もしています。<br>
+<Img Src="TSOtutorial_img\G.jpg"><br><br>
+
+UV展開をします。今回は Uキー→ Project From View に頼りましょう。<br>
+<Img Src="TSOtutorial_img\UV.jpg"><br><br>
+
+ウェイト設定をします。今回は「W_Hips」に全ての頂点を割り当ててしまいましょう。<br>
+<Img Src="TSOtutorial_img\waight.jpg"><br><br>
+
+マテリアルを割り当てます。複数のマテリアルを一つのオブジェクトに割り当てても不具合無く出力できますが、
+今回は一つとします。<br>
+マテリアル名は「Material」とします。<br>
+<Img Src="TSOtutorial_img\material.jpg"><br><br>
+
+必要なテクスチャを追加します。<br>
+今回は32x32の白色の画像を新規作成します。<br>
+<Img Src="TSOtutorial_img\img.jpg"><br><br>
+
+エクスポーターを使ったTSOファイルの出力をします。
+File→ Export→ 3DCG tso file (.tso)... と選ぶと設定画面が表示されます。<br>
+このスクリプトは6つのタブがあります。順番に設定して下さい。<br><br>
+
+<Img Src="TSOtutorial_img\NodeTab.jpg"><br>
+<font color="0000FF">[Nodeタブ]</font><br>
+TSOファイルに必要なノードを選びます。<br>
+BlenderのArmatureオブジェクトを参照する事もできますが、今回は外部のTSOファイルを参照します。<br>
+(カス子の衣装を選べば大抵は問題無いです。)<br><br>
+
+<Img Src="TSOtutorial_img\MeshTab.jpg"><br>
+<font color="0000FF">[Meshタブ]</font><br>
+TSOファイルに必要なメッシュデータを編集します。<br>
+<font color="FF0000">[Source object menu]</font> で参照するオブジェクト名を選びます。<br>
+<font color="FF0000">[Name]</font> でTSOでのメッシュ名を入力します。(適当で良いです。)<br>
+<font color="FF0000">[New]</font> でメッシュの追加をします。<br><br>
+
+<Img Src="TSOtutorial_img\TexTab.jpg"><br>
+<font color="0000FF">[Textureタブ]</font><br>
+TSOファイルに必要なテクスチャを編集します。<br>
+UVでメッシュに貼り付ける画像とToon用テクスチャが必要ですが、今回は両方一つの画像を使います。<br>
+<font color="FF0000">[Image menu]</font> で参照する画像を選択します。<br>
+<font color="FF0000">[Texture Name]</font> でTSOファイル内でのテクスチャ名を入力します。<br>
+<b>(マテリアルテキストからテクスチャを参照する時に同一の名前である必要があります。)</b><br>
+<font color="FF0000">[File Name]</font> でTSOファイル内での画像ファイル名を入力します。<br>
+(適当で良いです。tso2mqo等で解凍した時のファイル名に使われる(？))<br>
+<font color="FF0000">[New]</font> でテクスチャの追加をします。<br><br>
+
+<Img Src="TSOtutorial_img\ShaderTab.jpg"><br>
+<font color="0000FF">[Shaderタブ]</font><br>
+TSOファイルに必要なシェーダファイルを編集します。<br>
+基本的に、「TAToonshade_050.cgfx」のみを追加します。<br>
+今回は取り込んだTAToonshade_050.cgfxを選択します。<br><br>
+
+<Img Src="TSOtutorial_img\MaterialTab.jpg"><br>
+<font color="0000FF">[Materialタブ]</font><br>
+TSOファイルに必要なマテリアルファイルを編集します。<br>
+<b>Meshタブで編集したメッシュオブジェクトにマテリアルが割り当てられている必要があります。</b><br>
+<b>マテリアルテキストの<font color="FF0000">[texture ShadeTex]</font>と<font color="FF0000">[texture ColorTex]</font>がテクスチャ名と同一である必要があります。</b><br>
+<font color="FF0000">[Material menu]</font> で編集するマテリアルを選択します。<br>
+<font color="FF0000">[Blander Text]</font> タブを押します。<br>
+<font color="FF0000">[Text menu]</font> マテリアルテキストを選択します。<br><br>
+
+<Img Src="TSOtutorial_img\ExportTab.jpg"><br>
+<font color="0000FF">[Exportタブ]</font><br>
+出力設定をします。<br>
+<font color="FF0000">[File selector]</font> で出力先を選択します。<br><br>
+
+もう一度Exportタブを押すと出力を開始します。<br><br>
+
+<Img Src="TSOtutorial_img\finish.jpg"><br>
+完成？<br>
+
+</Body>
+</Html>
